@@ -40,7 +40,7 @@ class SentimentModel(object):
             if os.path.exists(self.model_path):
                 self._model = self._load_model()
             else:
-                self._model = SentimentModel._build_model()
+                self._model = self._build_model()
         else:
             self._model = model
 
