@@ -42,7 +42,7 @@ function create_updater(){
   }
 
   var svg = d3.select("svg"),
-    margin = {top: 20, right: 20, bottom: 30, left: 40},
+    margin = {top: 20, right: 20, bottom: 50, left: 40},
     width = +svg.attr("width") - margin.left - margin.right,
     height = +svg.attr("height") - margin.top - margin.bottom
 
@@ -64,7 +64,7 @@ function create_updater(){
   var x_axis = g.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
-      .style("font-size","15px")
+      .style("font-size","30px")
       .call(d3.axisBottom(x));
 
   return update
