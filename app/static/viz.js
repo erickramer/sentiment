@@ -74,7 +74,7 @@ function res_to_bar_data(res){
   var data = _.chain(res.emoji)
               .map(function(num, key){ return {'emoji': key, 'num': num} })
               .sortBy(function(x){ return -x.num})
-              .first(20)
+              .first(30)
               .value();
 
   return data;
