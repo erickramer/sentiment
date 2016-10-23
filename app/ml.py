@@ -14,7 +14,7 @@ import numpy as np
 
 def data_gen(batch_size=100):
     # loading all tweets into memory for speed
-    tweets = db.session.query(Tweet.id).all()
+    tweets = db.session.query(Tweet).all()
 
     xs = []
     ys = []
