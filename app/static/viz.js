@@ -5,8 +5,16 @@ function create_updater(){
     var bars = g.selectAll("rect")
       .data(data, function(d) { return d.emoji; });
 
+    var t = d3.transition()
+              .duration(750);
+
     x.domain(data.map(function(d) { return d.emoji; }));
     y.domain([0, d3.max(data, function(d) { return d.num; })]);
+
+    x_axis.style("fill-opacity", 1e-6)
+      .transition(t)
+      .call(d3.axisBottom(x))
+      .style("fill-opacity", 1)
 
     bars.exit()
       .style("fill", "red")
@@ -30,6 +38,7 @@ function create_updater(){
       .attr("height", function(d) { return height - y(d.num); })
       .style('fill', 'grey')
       .style('fill-opacity', 1)
+
   }
 
   var svg = d3.select("svg"),
@@ -43,44 +52,49 @@ function create_updater(){
   var g = svg.append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  var t = d3.transition()
-            .duration(750);
+  var y_axis = g.append("g")
+      .attr("class", "y axis")
+      .call(d3.axisLeft(y).ticks(10, "%"))
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", "0.71em")
+      .attr("text-anchor", "end")
+
+  var x_axis = g.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .style("font-size","15px")
+      .call(d3.axisBottom(x));
 
   return update
+}
+
+function res_to_bar_data(res){
+  var data = _.chain(res.emoji)
+              .map(function(num, key){ return {'emoji': key, 'num': num} })
+              .sortBy(function(x){ return -x.num})
+              .first(20)
+              .value();
+
+  return data;
 }
 
 
 $('document').ready(function(){
 
-  var update_barplot = create_updater()
-  var data = {text: "hello"}
-
-  $.post('/api/score', data, function(res){
-
-    function randomizer(){
-      var new_data = _.chain(res.emoji)
-       .map(function(num, key){ return {'emoji': key, 'num': num + Math.random() - 0.5}})
-       .sortBy(function(d){return -d.num})
-       .first(20)
-       .value();
-
-      update_barplot(new_data)
-
-    }
-
-    var data = _.chain(res.emoji)
-                .map(function(num, key){ return {'emoji': key, 'num': num} })
-                .sortBy(function(x){ return -x.num})
-                .first(20)
-                .value();
-
+  function barplot(res){
+    var data = res_to_bar_data(res);
     update_barplot(data);
+  }
 
-    setInterval(randomizer, 5000)
+  var update_barplot = create_updater()
+  update_barplot = _.debounce(update_barplot, 1000)
 
+  $('#target').keyup(function(){
+    var post_data = {text: $(this).val()}
+    console.log(post_data)
+    $.post('/api/score', post_data, barplot);
   })
-
-
-
 
 })
