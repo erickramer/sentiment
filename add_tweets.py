@@ -24,6 +24,7 @@ while True:
     stream = api.GetStreamFilter(track=emojis)
 
     for status in stream:
+
         try:
             text = status['text']
             try:
