@@ -39,7 +39,7 @@ class Tweet(db.Model):
         x = []
         if len(self.text) < 140:
             x += [0] * (140 - len(self.text))
-        x += [ord(c) % 500 for c in self.text]
+        x += [ord(c) % 5000 for c in self.text]
         return np.array(x[0:140])
 
     @property

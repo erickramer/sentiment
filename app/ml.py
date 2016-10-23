@@ -51,10 +51,11 @@ class SentimentModel(object):
     def _build_model(self):
         text = Input(shape=(140,))
 
-        x = Embedding(input_dim=500, output_dim=10)(text)
-        x = LSTM(128, return_sequences=True)(x)
-        x = LSTM(128)(x)
-        x = Dense(128, activation="relu")(x)
+        x = Embedding(input_dim=5000, output_dim=100)(text)
+        x = LSTM(256, return_sequences=True)(x)
+        x = LSTM(256)(x)
+        x = Dense(256, activation="relu")(x)
+        x = Dense(256, activation="relu")(x)
         x = Dropout(0.5)(x)
 
         emoji = Dense(len(emojis), activation="sigmoid", name="emoji")(x)
