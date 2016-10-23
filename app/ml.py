@@ -13,25 +13,38 @@ import os
 import numpy as np
 
 def data_gen(batch_size=100):
-    ids = db.session.query(Tweet.id).all()
-    ids = [i[0] for i in ids]
+    # loading all tweets into memory for speed
+    tweets = db.session.query(Tweet.id).all()
 
-    nb_batchs = int(len(ids) / batch_size)
+    xs = []
+    ys = []
+    ss = []
 
     while True:
-        np.random.shuffle(ids)
+        np.random.shuffle(tweets)
 
-        for i in range(nb_batchs):
+        for tweet in tweets:
+            xs.append(tweet.x)
+            ys.append(tweet.y)
+            ss.append(tweet.sentiment)
 
-            ids_ss = ids[i*batch_size:(i+1)*batch_size]
+            if len(xs) == batch_size:
+                yield np.stack(xs), [np.stack(ys), np.stack(ss)]
+                xs = []
+                ys = []
+                ss = []
 
-            tweets = db.session.query(Tweet).filter(Tweet.id.in_(ids_ss)).all()
-
-            xs = [tweet.x for tweet in tweets]
-            ys = [tweet.y for tweet in tweets]
-            ss = [tweet.sentiment for tweet in tweets]
-
-            yield np.stack(xs), [np.stack(ys), np.stack(ss)]
+        # for i in range(nb_batchs):
+        #
+        #     ids_ss = ids[i*batch_size:(i+1)*batch_size]
+        #
+        #     tweets = db.session.query(Tweet).filter(Tweet.id.in_(ids_ss)).all()
+        #
+        #     xs = [tweet.x for tweet in tweets]
+        #     ys = [tweet.y for tweet in tweets]
+        #     ss = [tweet.sentiment for tweet in tweets]
+        #
+        #     yield np.stack(xs), [np.stack(ys), np.stack(ss)]
 
 class SentimentModel(object):
 
@@ -56,12 +69,12 @@ class SentimentModel(object):
         x = Dropout(0.5)(x)
 
         emoji = Dense(len(emojis), activation="sigmoid", name="emoji")(x)
-        sentiment = Dense(1, activation="linear", name="sentiment")(x)
+        sentiment = Dense(3, activation="sigmoid", name="sentiment")(x)
 
         model = Model(text, [emoji, sentiment])
 
         model.compile("RMSprop",
-                  loss={'sentiment': "mae", "emoji": "binary_crossentropy"},
+                  loss={'sentiment': "binary_crossentropy", "emoji": "binary_crossentropy"},
                   loss_weights={"sentiment":0.5, "emoji": 0.5})
 
         return model

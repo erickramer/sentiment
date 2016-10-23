@@ -22,16 +22,19 @@ class Tweet(db.Model):
 
     @property
     def sentiment(self):
+        x = np.zeros(3)
         if len(self.emojis) > 0:
             e = np.random.choice(self.emojis)
             if e in positive_emojis:
-                return 1
+                x[0] = 1
+                return x
             elif e in negative_emojis:
-                return -1
+                x[2] = 1
+                return x
             else:
-                return 0
-        else:
-            return 0
+                x[1] = 1
+                return x
+        return x
 
     @property
     def x(self):
