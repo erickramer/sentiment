@@ -51,11 +51,8 @@ class SentimentModel(object):
     def _build_model(self):
         text = Input(shape=(140,))
 
-        x = Embedding(input_dim=5000, output_dim=100)(text)
-        x = LSTM(256, return_sequences=True)(x)
-        x = LSTM(256)(x)
-        x = Dense(256, activation="relu")(x)
-        x = Dense(256, activation="relu")(x)
+        x = Embedding(input_dim=5000, output_dim=64)(text)
+        x = LSTM(128)(x)
         x = Dropout(0.5)(x)
 
         emoji = Dense(len(emojis), activation="sigmoid", name="emoji")(x)
@@ -65,7 +62,7 @@ class SentimentModel(object):
 
         model.compile("RMSprop",
                   loss={'sentiment': "mae", "emoji": "binary_crossentropy"},
-                  loss_weights={"sentiment":0.2, "emoji": 0.8})
+                  loss_weights={"sentiment":0.5, "emoji": 0.5})
 
         return model
 
