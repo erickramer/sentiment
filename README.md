@@ -5,7 +5,7 @@ network with an [LSTM layer from Keras](https://keras.io/layers/recurrent/). On
 the frontend, I'm using [D3](https://d3js.org/) and jQuery to animate the barplots.
 
 The training data comes from twitter using [python-twitter](https://github.com/bear/python-twitter)'s
-streaming API. The ```add_tweets.py``` script streams tweets into a SQLite database for
+streaming API. The ```add_tweets.py``` script streams tweets with emojis into a SQLite database for
 training. The ```fit.py``` script trains the neural network and saves the output
 to ```data/model.5h```
 
@@ -39,7 +39,7 @@ Now you have the WebApp running at [localhost:5000](localhost:5000)
 
 If you want to add tweets to the SQLite database, do the following:
 
-1) Create ```config.py```
+1) Create ```config.py``` in the base directory
 
 This file should look like this:
 
