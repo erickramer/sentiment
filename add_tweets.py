@@ -14,7 +14,7 @@ api = twitter.Api(consumer_key=config.consumer_key,
                 access_token_key=config.access_token,
                 access_token_secret=config.access_token_secret,
                 timeout=60*5)
-i = 0
+#i = 0
 
 while True:
 
@@ -32,16 +32,16 @@ while True:
                 tweet = Tweet(text)
                 db.session.add(tweet)
                 db.session.commit()
-                i += 1
+               # i += 1
             except:
                 print "Commit failed"
                 db.session.rollback()
         except:
             print "Error decoding stream"
 
-    if i > NB_TWEETS:
-        break
-    elif i % 5 == 0:
-        print "-------------------"
-        print "| Added %i tweets |" % i
-        print "-------------------"
+    #if i > NB_TWEETS:
+    #    break
+    #elif i % 5 == 0:
+    #    print "-------------------"
+    #    print "| Added %i tweets |" % i
+    #    print "-------------------"

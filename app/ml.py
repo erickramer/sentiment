@@ -58,6 +58,13 @@ class SentimentModel(object):
             self._model = model
 
     @property
+    def _baseline(self):
+        tweet = Tweet("")
+        x = tweet.x.reshape(1, -1)
+        scores, sentiment = self._model.predict(x)
+        return scores
+
+    @property
     def model_path(self):
         return os.path.join(app.config['BASE_DIR'], 'data/model.h5')
 
@@ -99,6 +106,7 @@ class SentimentModel(object):
         x = tweet.x.reshape(1, -1)
         scores, sentiment = self._model.predict(x)
 
+        scores /= self._baseline
         scores = [float(s) for s in scores[0, :]]
         scores = dict(zip(emojis, scores))
         sentiment = float(sentiment[0, 0])
