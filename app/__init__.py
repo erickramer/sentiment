@@ -6,6 +6,7 @@ app = Flask(__name__)
 
 app.config['BASE_DIR'] = os.getcwd()
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.getcwd() + '/data/tweets.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 db.engine.raw_connection().text_factory = str

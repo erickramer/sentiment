@@ -34,18 +34,6 @@ def data_gen(batch_size=100):
                 ys = []
                 ss = []
 
-        # for i in range(nb_batchs):
-        #
-        #     ids_ss = ids[i*batch_size:(i+1)*batch_size]
-        #
-        #     tweets = db.session.query(Tweet).filter(Tweet.id.in_(ids_ss)).all()
-        #
-        #     xs = [tweet.x for tweet in tweets]
-        #     ys = [tweet.y for tweet in tweets]
-        #     ss = [tweet.sentiment for tweet in tweets]
-        #
-        #     yield np.stack(xs), [np.stack(ys), np.stack(ss)]
-
 class SentimentModel(object):
 
     def __init__(self, model = None):
