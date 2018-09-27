@@ -88,13 +88,23 @@ $('document').ready(function(){
     update_barplot(data);
   }
 
+
   var update_barplot = create_updater()
   update_barplot = _.debounce(update_barplot, 1000)
 
+  $("button").click(function(){
+    var button_text = $(this).text()
+    var post_data = {text: button_text}
+
+    $.post('/api/score', post_data, barplot)
+    $('#target').val(button_text)
+  })
+
   $('#target').keyup(function(){
     var post_data = {text: $(this).val()}
-    console.log(post_data)
     $.post('/api/score', post_data, barplot);
   })
+
+
 
 })

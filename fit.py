@@ -6,4 +6,4 @@ count = 0
 while True:
     count += 1
     "\n\nTraining round: %i" % count
-    sentiment_model.fit(samples_per_epoch=1e4, nb_epoch=10)
+    sentiment_model.fit(steps_per_epoch=1e2, nb_epoch=10, save=True)

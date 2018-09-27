@@ -45,12 +45,7 @@ class SentimentModel(object):
         else:
             self._model = model
 
-    @property
-    def _baseline(self):
-        tweet = Tweet("")
-        x = tweet.x.reshape(1, -1)
-        scores, sentiment = self._model.predict(x)
-        return scores
+        self._set_baseline()
 
     @property
     def model_path(self):
@@ -77,24 +72,40 @@ class SentimentModel(object):
     def _load_model(self):
         return keras.models.load_model(self.model_path)
 
-    def fit(self, batch_size=100, samples_per_epoch=1e3,
+    def _set_baseline(self):
+        tweet = Tweet("")
+        x = tweet.x.reshape(1, -1)
+        scores, sentiment = self._model.predict(x)
+        self.baseline = scores
+
+    def fit(self, batch_size=100, steps_per_epoch=1e3,
             nb_epoch=10, save=True):
 
         gen = data_gen(batch_size)
 
         self._model.fit_generator(gen,
-                samples_per_epoch=samples_per_epoch,
-                nb_epoch=nb_epoch)
+                steps_per_epoch=steps_per_epoch,
+                epochs=nb_epoch)
 
         if save:
             self._model.save(self.model_path)
 
-    def score(self, text):
+    def score(self, text, normalize = True):
+        app.logger.info("Scoring tweet: %s ", text)
+
         tweet = Tweet(text)
         x = tweet.x.reshape(1, -1)
-        scores, sentiment = self._model.predict(x)
 
-        scores /= self._baseline
+        try:
+            scores, sentiment = self._model.predict(x)
+
+            if normalize:
+                scores /= self.baseline
+        except:
+            app.logger.error("Failed on tweet: %s", text)
+            scores = self.baseline
+
+
         scores = [float(s) for s in scores[0, :]]
         scores = dict(zip(emojis, scores))
         sentiment = float(sentiment[0, 0])
