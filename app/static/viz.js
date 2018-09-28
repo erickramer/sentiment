@@ -90,7 +90,7 @@ $('document').ready(function(){
 
 
   var update_barplot = create_updater()
-  update_barplot = _.debounce(update_barplot, 300)
+  update_barplot = _.debounce(update_barplot, 750)
 
   $("button").click(function(){
     var button_text = $(this).text()
@@ -105,8 +105,8 @@ $('document').ready(function(){
     $.post('/api/score', post_data, barplot);
   })
 
+  // fill in baseline data
   var null_data = {text: ""}
   $.post('/api/score', null_data, barplot)
-
 
 })
